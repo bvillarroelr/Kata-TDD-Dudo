@@ -16,8 +16,9 @@ class Dado:
     def lanzar(self):
         self.valor = random.randint(1,6)
         self.pinta = CARAS.get(self.valor)
+        print(f'{self.valor}: {self.pinta}')
+
+        # para facilitar las operaciones a futuro solo retornamos el valor
         return self.valor
-    def getAll(self):
-        print(self.valor)
-        print(self.pinta)
+
 

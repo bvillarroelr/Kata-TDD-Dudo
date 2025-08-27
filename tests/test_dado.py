@@ -2,15 +2,6 @@ import pytest
 from dado import Dado
 nums = [1,2,3,4,5,6]
 
-nums_pintas = {
-    1:'As',
-    2:'Tonto',
-    3:'Tren',
-    4:'Cuadra',
-    5:'Quina',
-    6:'Sexto',
-}
-
 def test_numero_valido():
     d = Dado()
     assert d.lanzar() in nums
