@@ -26,9 +26,10 @@ jobs:
             python -m pip install --upgrade pip
             pip install -r requirements.txt
             pip install -U pytest
-            pip install -e .
 
         # Running Pytest!
         - name: Test with pytest
+          env:
+            PYTHONPATH: .
           run: |
             python -m pytest
