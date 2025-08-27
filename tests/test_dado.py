@@ -1,4 +1,5 @@
 import pytest
+from dado import Dado
 nums = [1,2,3,4,5,6]
 
 nums_pintas = {
@@ -11,21 +12,23 @@ nums_pintas = {
 }
 
 def test_numero_valido():
-    assert Dado.lanzar() in nums
+    d = Dado()
+    assert d.lanzar() in nums
 
 def test_pinta_valida():
-    k = list(range(1,7))
+    d = Dado()
+    d.lanzar()
     
-    if k[0] == 1:
-        assert Dado.pinta == 'As'
-    if k[1] == 2:
-        assert Dado.pinta == 'Tonto'
-    if k[2] == 3:
-        assert Dado.pinta == 'Tren' 
-    if k[3] == 4:
-        assert Dado.pinta == 'Cuadra' 
-    if k[4] == 5:
-        assert Dado.pinta == 'Quina' 
-    if k[5] == 6:
-        assert Dado.pinta == 'Sexta'   
+    if d.valor == 1:
+        assert d.pinta == 'As'
+    if d.valor == 2:
+        assert d.pinta == 'Tonto'
+    if d.valor == 3:
+        assert d.pinta == 'Tren' 
+    if d.valor == 4:
+        assert d.pinta == 'Cuadra' 
+    if d.valor == 5:
+        assert d.pinta == 'Quina' 
+    if d.valor == 6:
+        assert d.pinta == 'Sexta'   
 
