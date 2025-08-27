@@ -1,5 +1,6 @@
 import pytest
-
+from cacho import Cacho
+from dado import Dado
 def test_cantidad_dados_inicial():
     cacho = Cacho()
     cant_inicial = cacho.getCantidadDados()
@@ -13,7 +14,7 @@ def test_lanzar_dados():
 def test_retirar_dados():
     cacho = Cacho()
     cacho.retirarDado()
-    assert cacho.getCantidadDado() == 4
+    assert cacho.getCantidadDados() == 4
 
 def test_agregar_dados():
     cacho = Cacho()

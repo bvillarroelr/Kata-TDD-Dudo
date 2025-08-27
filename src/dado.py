@@ -13,6 +13,7 @@ class Dado:
     def __init__(self):
         self.valor = None
         self.pinta = None
+
     def lanzar(self):
         self.valor = random.randint(1,6)
         self.pinta = CARAS.get(self.valor)
@@ -21,4 +22,5 @@ class Dado:
         # para facilitar las operaciones a futuro solo retornamos el valor
         return self.valor
 
-
+    def getValor(self):
+        return self.valor
