@@ -27,3 +27,10 @@ def test_retirar_dados_limite():
     cacho.retirarDado()
     # Cantidad no negativa
     assert cacho.getCantidadDados() == 0
+
+def test_mostrar_ocultar():
+    cacho = Cacho()
+    cacho.toggleMostrar()
+    assert cacho.visible is False
+    cacho.toggleMostrar()
+    assert cacho.visible is True
