@@ -1,4 +1,5 @@
 import pytest
+from arbitro_ronda import ArbitroRonda
 
 def test_duda_pierde_quien_dudo():
     arb = ArbitroRonda()
@@ -15,13 +16,15 @@ def test_duda_pierde_apostador():
     assert resultado == "pierde_apostador"
 
 def test_calzar_acierta():
+    arb = ArbitroRonda()
     apuesta = (3, 2)  # 3 "tontos"
     mesa = [2, 2, 1, 4, 5]  # 2 tontos + 1 as (comodín) = 3
-    res = ArbitroRonda.resolver_calzar(apuesta, mesa, ases_comodin=True)
+    res = arb.resolver_calzar(apuesta, mesa, ases_comodin=True)
     assert res == "acierto"
 
 def test_calzar_falla():
+    arb = ArbitroRonda()
     apuesta = (4, 6)  # 4 "sextos"
     mesa = [6, 6, 1, 2, 3]  # 2 sextos + 1 as = 3 (< 4)
-    res = ArbitroRonda.resolver_calzar(apuesta, mesa, ases_comodin=True)
+    res = arb.resolver_calzar(apuesta, mesa, ases_comodin=True)
     assert res == "falla"
