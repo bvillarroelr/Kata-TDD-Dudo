@@ -1,8 +1,6 @@
 import pytest
 from validador_apuesta import *
 
-from src.validador_apuesta import ValidadorApuesta
-
 
 def test_empezar_apuesta():
     pinta = 2

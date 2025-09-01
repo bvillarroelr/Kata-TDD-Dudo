@@ -7,3 +7,7 @@ class ValidadorApuesta:
             raise ValueError("No puedes empezar la apuesta con un as")
         self.pinta_actual = pinta
         self.cantidad_actual = cantidad
+
+    def apostar(self,pinta,cantidad):
+        self.pinta_actual = pinta
+        self.cantidad_actual = cantidad
