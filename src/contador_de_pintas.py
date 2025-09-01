@@ -15,13 +15,17 @@ class ContadorDePintas:
 
     def contar(self,pinta=0, un_dado=False):
         if un_dado:
-            if pinta == 0:
-                return self.resultados_reales
-            else:
-                return self.resultados_reales[pinta-1]
+            return self._ronda_especial(pinta)
+        return self._ronda_normal(pinta)
+
+    def _ronda_especial(self,pinta):
+        if pinta == 0:
+            return self.resultados_reales
+        else:
+            return self.resultados_reales[pinta-1]
+
+    def _ronda_normal(self,pinta):
         if pinta == 0:
             return self.resultados
         else:
             return self.resultados[pinta-1]
-
-
