@@ -1,5 +1,7 @@
 import pytest
 
+from contador_de_pintas import ContadorDePintas
+
 
 def test_contador(mocker):
     # Crear mocks de Cacho usando mocker
@@ -14,6 +16,7 @@ def test_contador(mocker):
     resultado = contador.contar()
     trenes = contador.contar(pinta=3)
     assert resultado == [2, 5, 4, 3, 3, 3]
+    assert trenes == 4
 
     cacho1.getResultados.assert_called_once()
     cacho2.getResultados.assert_called_once()
