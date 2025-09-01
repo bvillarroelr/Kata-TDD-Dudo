@@ -14,6 +14,7 @@ class ContadorDePintas:
             self.resultados[i] = self.resultados_reales[i] + self.resultados[0]
 
     def contar(self,pinta=0, un_dado=False):
+        self._verificar_rango(pinta)
         if un_dado:
             return self._ronda_especial(pinta)
         return self._ronda_normal(pinta)
@@ -29,3 +30,7 @@ class ContadorDePintas:
             return self.resultados
         else:
             return self.resultados[pinta-1]
+
+    def _verificar_rango(self,pinta):
+        if pinta < 0 or pinta > 6:
+            raise ValueError("Pinta fuera de rango")
