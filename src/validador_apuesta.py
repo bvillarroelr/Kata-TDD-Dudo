@@ -23,6 +23,8 @@ class ValidadorApuesta:
             raise ValueError("No se puede bajar la cantidad apostada")
         if self.pinta_actual == pinta and self.cantidad_actual == cantidad:
             raise ValueError("La apuesta debe subir en algun aspecto")
+        if self.pinta_actual == 1 and self.cantidad_actual*2 +1 != cantidad:
+            raise ValueError("Cantidad invalida para cambio de as")
         self.pinta_actual = pinta
         self.cantidad_actual = cantidad
         return True
