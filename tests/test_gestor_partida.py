@@ -1,5 +1,5 @@
 import pytest
-
+from gestor_partida import *
 
 def test_base_partida():
     jugadores = ["Andrés", "Benjamín","Alex"]
