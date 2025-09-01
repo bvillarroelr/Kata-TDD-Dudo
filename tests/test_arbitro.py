@@ -1,5 +1,6 @@
 import pytest
 from arbitro_ronda import ArbitroRonda
+from cacho import Cacho
 
 def test_duda_pierde_quien_dudo():
     arb = ArbitroRonda()
@@ -28,3 +29,37 @@ def test_calzar_falla():
     mesa = [6, 6, 1, 2, 3]  # 2 sextos + 1 as = 3 (< 4)
     res = arb.resolver_calzar(apuesta, mesa, ases_comodin=True)
     assert res == "falla"
+
+def test_condicion_calzar_mitad_dados():
+    # solo si tiene 1 dado o mas de la mitad está en juego
+    c1 = Cacho()
+    c2 = Cacho()
+    dados_en_juego = c1.getCantidadDados() + c2.getCantidadDados() # 2 cachos en juego, 5 dados por cacho = 10
+    print(dados_en_juego)
+    arb = ArbitroRonda()
+    # suponemos que el jugador con el cacho 1 es quien quiere calzar
+    assert arb.verificarCalzar(dados_en_juego, c1) is True
+
+def test_condicion_calzar_1dado():
+    c1 = Cacho()
+    c2 = Cacho()
+    arb = ArbitroRonda
+    for i in range(4):
+        c1.retirarDado()    # solo queda 1 dado
+
+    dados_en_juego = c1.getCantidadDados() + c2.getCantidadDados()
+    assert dados_en_juego == 6 
+    assert arb.verificarCalzar(dados_en_juego, c1) is True # como c1 tiene un dado, si se puede calzar
+
+def test_quitar_y_dar_dados():
+    c1 = Cacho()
+    c2 = Cacho()
+    c1.retirarDado()
+    c2.retirarDado()
+
+    arb = ArbitroRonda()
+    assert arb.getPoolDados() == 2
+
+    c2.agregarDado() # se debe quitar del pool
+
+    assert arb.getPoolDados() == 1

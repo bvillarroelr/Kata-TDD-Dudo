@@ -18,6 +18,7 @@ class Cacho:
         d = Dado()
         self.lista_dados.append(d)
         self.cantidad_dados +=1
+        
     def retirarDado(self):
         if self.cantidad_dados > 0:
             self.lista_dados.pop()
