@@ -6,4 +6,4 @@ class ValidadorApuesta:
         if pinta == 1:
             raise ValueError("No puedes empezar la apuesta con un as")
         self.pinta_actual = pinta
-        self.cantidad = cantidad
+        self.cantidad_actual = cantidad
