@@ -30,7 +30,6 @@ def test_retirar_dados_limite():
 
 def test_mostrar_ocultar():
     cacho = Cacho()
-    cacho.toggleMostrar()
     assert cacho.visible is False
     cacho.toggleMostrar()
     assert cacho.visible is True
