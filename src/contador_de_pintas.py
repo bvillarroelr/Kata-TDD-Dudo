@@ -13,7 +13,12 @@ class ContadorDePintas:
         for i in range(1,len(self.resultados_reales)):
             self.resultados[i] = self.resultados_reales[i] + self.resultados[0]
 
-    def contar(self,pinta=0):
+    def contar(self,pinta=0, un_dado=False):
+        if un_dado:
+            if pinta == 0:
+                return self.resultados_reales
+            else:
+                return self.resultados_reales[pinta-1]
         if pinta == 0:
             return self.resultados
         else:
