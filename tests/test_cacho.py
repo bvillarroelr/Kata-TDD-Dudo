@@ -1,6 +1,7 @@
 import pytest
 from cacho import Cacho
 from dado import Dado
+from arbitro_ronda import ArbitroRonda
 def test_cantidad_dados_inicial():
     cacho = Cacho()
     cant_inicial = cacho.getCantidadDados()
@@ -13,18 +14,22 @@ def test_lanzar_dados():
 
 def test_retirar_dados():
     cacho = Cacho()
-    cacho.retirarDado()
+    arb = ArbitroRonda()
+    cacho.retirarDado(arb)
     assert cacho.getCantidadDados() == 4
 
 def test_agregar_dados():
     cacho = Cacho()
-    cacho.agregarDado()
-    assert cacho.getCantidadDados() == 6
+    arb = ArbitroRonda()
+    cacho.retirarDado(arb) # 4
+    cacho.agregarDado(arb) # 5
+    assert cacho.getCantidadDados() == 5
 
 def test_retirar_dados_limite():
     cacho = Cacho()
+    arb = ArbitroRonda()
     cacho.setCantidadDados(0)
-    cacho.retirarDado()
+    cacho.retirarDado(arb)
     # Cantidad no negativa
     assert cacho.getCantidadDados() == 0
 
