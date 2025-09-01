@@ -9,22 +9,35 @@ class ValidadorApuesta:
         self.pinta_actual = pinta
         self.cantidad_actual = cantidad
 
-    def apostar(self,pinta,cantidad):
+    def apostar(self, pinta, cantidad):
+        if self._es_cambio_a_as(pinta, cantidad):
+            return self._actualizar_apuesta(pinta, cantidad)
+
+        self._validar_cambio_apuesta(pinta, cantidad)
+        self._validar_cambio_desde_as(pinta, cantidad)
+
+        return self._actualizar_apuesta(pinta, cantidad)
+
+    def _es_cambio_a_as(self, pinta, cantidad):
         if pinta == 1:
-            if cantidad == int(self.cantidad_actual/2) + 1:
-                self.pinta_actual = pinta
-                self.cantidad_actual = cantidad
+            if cantidad == int(self.cantidad_actual / 2) + 1:
                 return True
             else:
                 raise ValueError("Cantidad invalida para cambio a as")
-        if self.pinta_actual > pinta:
-            raise ValueError("No se puede bajar la pinta apostada")
-        if self.cantidad_actual > cantidad:
-            raise ValueError("No se puede bajar la cantidad apostada")
+
+    def _validar_cambio_apuesta(self, pinta, cantidad):
         if self.pinta_actual == pinta and self.cantidad_actual == cantidad:
             raise ValueError("La apuesta debe subir en algun aspecto")
-        if self.pinta_actual == 1 and self.cantidad_actual*2 +1 != cantidad:
+        elif self.pinta_actual > pinta:
+            raise ValueError("No se puede bajar la pinta apostada")
+        elif self.cantidad_actual > cantidad:
+            raise ValueError("No se puede bajar la cantidad apostada")
+
+    def _validar_cambio_desde_as(self, pinta, cantidad):
+        if self.pinta_actual == 1 and self.cantidad_actual * 2 + 1 != cantidad:
             raise ValueError("Cantidad invalida para cambio de as")
+
+    def _actualizar_apuesta(self, pinta, cantidad):
         self.pinta_actual = pinta
         self.cantidad_actual = cantidad
         return True
