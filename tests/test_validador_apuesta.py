@@ -20,3 +20,25 @@ def test_cambio_de_pinta_valido():
     validador.apostar(3,2)
     assert validador.pinta_actual == 3
     assert validador.cantidad_actual == 2
+
+def test_cambio_de_cantidad_valido():
+    validador = ValidadorApuesta(2,2)
+    validador.apostar(2,3)
+    assert validador.cantidad_actual == 3
+    assert validador.pinta_actual == 2
+
+def test_cambio_de_pinta_invalido():
+    validador = ValidadorApuesta(3,2)
+    with pytest.raises(ValueError) as exc_info:
+        validador.apostar(2,2)
+    assert "No se puede bajar la pinta apostada" in str(exc_info.value)
+    assert validador.pinta_actual == 3
+    assert validador.cantidad_actual == 2
+
+def test_cambio_de_cantidad_invalido():
+    validador = ValidadorApuesta(2,3)
+    with pytest.raises(ValueError) as exc_info:
+        validador.apostar(2,2)
+    assert "No se puede bajar la cantidad apostada" in str(exc_info.value)
+    assert validador.cantidad_actual == 3
+    assert validador.pinta_actual == 2
