@@ -2,6 +2,7 @@ import pytest
 from validador_apuesta import *
 
 
+
 def test_empezar_apuesta():
     pinta = 2
     cantidad = 3
@@ -48,3 +49,20 @@ def test_cambio_de_apuesta_igual():
     with pytest.raises(ValueError) as exc_info:
         validador.apostar(2,2)
     assert "La apuesta debe subir en algun aspecto" in str(exc_info.value)
+
+def test_cambiar_apuesta_a_as():
+    pinta = 2
+    cantidad = 2
+    validador = ValidadorApuesta(pinta,cantidad)
+    cantidad = int(cantidad/2) + 1
+    validador.apostar(1,cantidad)
+    assert validador.pinta_actual == 1
+    assert validador.cantidad_actual == cantidad
+
+def test_cambiar_apuesta_a_as_invalido():
+    validador = ValidadorApuesta(2,2)
+    with pytest.raises(ValueError) as exc_info:
+        validador.apostar(1,4)
+    assert validador.pinta_actual == 2
+    assert validador.cantidad_actual == 2
+    assert "Cantidad invalida para cambio a as" in str(exc_info.value)
