@@ -36,3 +36,18 @@ def test_contador_ronda_de_un_dado(mocker):
 
     cacho1.getResultados.assert_called_once()
     cacho2.getResultados.assert_called_once()
+
+def test_pinta_invalida(mocker):
+    cacho1 = mocker.Mock()
+    cacho1.getResultados.return_value = [1, 2, 2, 3, 6]
+
+    cacho2 = mocker.Mock()
+    cacho2.getResultados.return_value = [1, 2, 3, 4, 5]
+
+    contador = ContadorDePintas([cacho1, cacho2])
+
+    with pytest.raises(ValueError) as exc_info:
+        contador.contar(pinta=7)
+    assert "Pinta fuera de rango" in str(exc_info.value)
+    cacho1.getResultados.assert_called_once()
+    cacho2.getResultados.assert_called_once()
