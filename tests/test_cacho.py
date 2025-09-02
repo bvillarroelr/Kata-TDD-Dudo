@@ -47,7 +47,7 @@ def test_buffer_dados():
     cacho.agregarDado(arb)
     assert cacho.getCantidadDados() == 5
     # si se le agrega un dado, sigue teniendo 5, pero la proxima vez que le quiten un dado no lo pierde
-    cacho.agrerarDado(arb)
+    cacho.agregarDado(arb)
     # deberia tener 2 dados en la ¨reserva¨ si le quitan
     assert cacho.getCantidadDados() == 5
     cacho.retirarDado(arb)
