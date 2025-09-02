@@ -2,6 +2,7 @@ import pytest
 from cacho import Cacho
 from dado import Dado
 from arbitro_ronda import ArbitroRonda
+
 def test_cantidad_dados_inicial():
     cacho = Cacho()
     cant_inicial = cacho.getCantidadDados()
@@ -38,3 +39,20 @@ def test_mostrar_ocultar():
     assert cacho.visible is False
     cacho.toggleMostrar()
     assert cacho.visible is True
+
+def test_buffer_dados():
+    cacho = Cacho()
+    arb = ArbitroRonda()
+    # parte con 5 dados
+    cacho.agregarDado(arb)
+    assert cacho.getCantidadDados() == 5
+    # si se le agrega un dado, sigue teniendo 5, pero la proxima vez que le quiten un dado no lo pierde
+    cacho.agrerarDado(arb)
+    # deberia tener 2 dados en la ¨reserva¨ si le quitan
+    assert cacho.getCantidadDados() == 5
+    cacho.retirarDado(arb)
+    assert cacho.getCantidadDados() == 5
+    cacho.retirarDado(arb)
+    assert cacho.getCantidadDados() == 5
+    cacho.retirarDado(arb)
+    assert cacho.getCantidadDados() == 4
