@@ -11,7 +11,7 @@ class GestorPartida:
             self.cachos[jugador] = Cacho()
         self._escoger_jugador_inicial()
 
-    def jugar(self):
+    def _jugar(self):
          pass
 
     def setDireccion(self, direccion):
@@ -20,8 +20,8 @@ class GestorPartida:
         elif direccion == "izquierda":
             self.direccion = -1
 
-    def pasar_turno(self):
-        self.jugar()
+    def jugar(self):
+        self._jugar()
         self.current_player = (self.current_player + self.direccion) % len(self.jugadores)
 
     def jugador_en_turno(self):

@@ -25,15 +25,15 @@ def test_rotacion_correcta(mocker):
     gestor = GestorPartida(jugadores)
     gestor.current_player = 0 #Se coloca al primer jugador para empezar para probar el test
     gestor.setDireccion("derecha")
-    mocker.patch.object(gestor, "jugar") #Pasar turno usa jugar pero no nos interesa en este test
-    gestor.pasar_turno()
+    mocker.patch.object(gestor, "_jugar") #Pasar turno usa jugar pero no nos interesa en este test
+    gestor.jugar()
     assert gestor.jugador_en_turno() == "Benjamín"
-    gestor.pasar_turno()
+    gestor.jugar()
     assert gestor.jugador_en_turno() == "Alex"
-    gestor.pasar_turno()
+    gestor.jugar()
     assert gestor.jugador_en_turno() == "Andrés"
     gestor.setDireccion("izquierda")
-    gestor.pasar_turno()
+    gestor.jugar()
     assert gestor.jugador_en_turno() == "Alex"
 
 
