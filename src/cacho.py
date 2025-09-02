@@ -4,6 +4,7 @@ class Cacho:
     def __init__(self):
         self.visible = False
         self.apuesta = None # tupla
+        self.buffer = 0
         self.lista_dados = []
         for i in range (1,6):
             d = Dado()
@@ -21,15 +22,19 @@ class Cacho:
             self.lista_dados.append(d)        
             self.cantidad_dados +=1
             arbitro.popPool()
+        else:
+            self.buffer += 1
         
     def retirarDado(self, arbitro):
-        if self.cantidad_dados > 0:
+        if self.cantidad_dados > 0 and self.buffer == 0:
             self.lista_dados.pop()
             self.cantidad_dados -=1
             arbitro.addPool()
+        elif self.cantidad_dados > 0 and self.buffer != 0:
+            self.buffer -= 1
         else:
             return
-
+        
     def getResultados(self):
         l = []
         for i in range(len(self.lista_dados)):
