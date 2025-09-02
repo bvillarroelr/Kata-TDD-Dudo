@@ -1,4 +1,3 @@
-from sys import exception
 
 
 class ValidadorApuesta:
