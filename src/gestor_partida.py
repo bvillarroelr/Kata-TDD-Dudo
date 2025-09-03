@@ -18,10 +18,7 @@ class GestorPartida:
     def _jugar(self):
         opcion = input(f"{self.jugador_en_turno()} escriba su opción : (apostar, dudar o calzar")
         if opcion == "dudar":
-            res =self.arbitro.resolver_duda((self.validador.cantidad_actual, self.validador.pinta_actual), self.cachos.values(), True)
-            if res == "pierde_quien_dudo":
-                self.cachos[self.jugador_en_turno()].retirarDado(self.arbitro)
-                self.cachos[self.jugadores[self.current_player - self.direccion]].agregarDado(self.arbitro)
+            self.dudar()
 
     def setDireccion(self, direccion):
         if direccion == "derecha":
@@ -68,3 +65,13 @@ class GestorPartida:
             except ValueError as e:
                 print(str(e))
         self.current_player = (self.direccion + self.current_player) % len(self.jugadores)
+
+    def dudar(self):
+        res = self.arbitro.resolver_duda((self.validador.cantidad_actual, self.validador.pinta_actual),
+                                         self.cachos.values(), True)
+        if res == "pierde_quien_dudo":
+            self.cachos[self.jugador_en_turno()].retirarDado(self.arbitro)
+            self.cachos[self.jugador_anterior()].agregarDado(self.arbitro)
+
+    def jugador_anterior(self):
+        return self.jugadores[self.current_player-self.direccion]
