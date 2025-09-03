@@ -2,7 +2,6 @@ import pytest
 
 from contador_de_pintas import ContadorDePintas
 
-
 def test_contador(mocker):
     cacho1 = mocker.Mock()
     cacho1.getResultados.return_value = [1, 2, 2, 3, 6]

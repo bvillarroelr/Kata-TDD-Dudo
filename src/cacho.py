@@ -59,3 +59,7 @@ class Cacho:
     
     def setApuesta(self, apuesta: tuple):
         self.apuesta = apuesta
+
+    def setResultados(self, valores: list[int]):
+        for i in range(len(valores)):
+         self.lista_dados[i].valor = valores[i]
