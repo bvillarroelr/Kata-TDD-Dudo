@@ -144,6 +144,12 @@ def test_apostar_especial_invalido():
     with pytest.raises(ValueError) as exc_info:
         validador.apostar(2,2)
     assert "No puedes cambiar la pinta este turno" in str(exc_info.value)
+    with pytest.raises(ValueError) as exc_info:
+        validador.apostar(1,1)
+    assert "Se debe subir la cantidad apostada" in str(exc_info.value)
+    with pytest.raises(ValueError) as exc_info:
+        validador.apostar(1,1,un_dado=True)
+    assert "No se puede bajar la cantidad" in str(exc_info.value)
 
 def test_apostar_especial_valido():
     validador = ValidadorApuesta(1,2, especial = True)
