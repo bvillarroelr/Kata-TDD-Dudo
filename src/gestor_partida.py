@@ -6,6 +6,7 @@ from validador_apuesta import ValidadorApuesta
 
 class GestorPartida:
     def __init__(self, jugadores):
+        self.juego_activo = True
         self.nuevo_turno =True
         self.turno_especial = None
         self.obligar = None
@@ -35,6 +36,8 @@ class GestorPartida:
             self.direccion = -1
 
     def jugar(self):
+        if not self.juego_activo:
+            raise Exception("Juego terminado")
         self.next_player()
         self._jugar()
 
@@ -135,6 +138,7 @@ class GestorPartida:
             elif self.direccion == -1 and self.current_player == 0:
                 self.current_player = len(self.jugadores) - 2
             self.jugadores.remove(jugador)
+            self.verificar_victoria()
 
     def ver_dados(self):
         if self.obligar == None:
@@ -150,3 +154,8 @@ class GestorPartida:
                 if jugador != self.jugador_en_turno():
                     dados.append(self.cachos[jugador].getResultados())
             return dados
+
+    def verificar_victoria(self):
+        if len(self.jugadores) == 1:
+            print(f"{self.jugadores[0]} ha ganado")
+            self.juego_activo = False
