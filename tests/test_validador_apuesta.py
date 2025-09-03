@@ -1,8 +1,6 @@
 import pytest
 from validador_apuesta import *
 
-from src.validador_apuesta import ValidadorApuesta
-
 
 def test_empezar_apuesta():
     pinta = 2
@@ -136,7 +134,21 @@ def test_apostar_con_cantidad_fuera_de_rango():
     assert validador.cantidad_actual == 2
     assert validador.pinta_actual == 2
 
-def test_apostar_especial_con_as():
+def test_empezar_apuesta_especial_con_as():
     validador = ValidadorApuesta(1,2, especial = True)
     assert validador.pinta_actual == 1
     assert validador.cantidad_actual == 2
+
+def test_apostar_especial_invalido():
+    validador = ValidadorApuesta(1,2, especial = True)
+    with pytest.raises(ValueError) as exc_info:
+        validador.apostar(2,2)
+    assert "No puedes cambiar la pinta este turno" in str(exc_info.value)
+
+def test_apostar_especial_valido():
+    validador = ValidadorApuesta(1,2, especial = True)
+    validador.apostar(1,4)
+    assert validador.pinta_actual == 1
+    assert validador.cantidad_actual == 4
+    validador.apostar(2,4, un_dado=True)
+    assert validador.pinta_actual == 2
