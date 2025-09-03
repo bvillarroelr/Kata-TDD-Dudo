@@ -1,6 +1,8 @@
 import pytest
 from validador_apuesta import *
 
+from src.validador_apuesta import ValidadorApuesta
+
 
 def test_empezar_apuesta():
     pinta = 2
@@ -133,3 +135,8 @@ def test_apostar_con_cantidad_fuera_de_rango():
         validador.apostar(2,-1)
     assert validador.cantidad_actual == 2
     assert validador.pinta_actual == 2
+
+def test_apostar_especial_con_as():
+    validador = ValidadorApuesta(1,2, especial = True)
+    assert validador.pinta_actual == 1
+    assert validador.cantidad_actual == 2
