@@ -59,6 +59,8 @@ class ValidadorApuesta:
         else:
             if self.pinta_actual != pinta:
                 raise ValueError("No puedes cambiar la pinta este turno")
+            if self.cantidad_actual >= cantidad:
+                raise ValueError("Se debe subir la cantidad apostada")
 
 
     def apostar_especial(self, pinta, cantidad, un_dado):
