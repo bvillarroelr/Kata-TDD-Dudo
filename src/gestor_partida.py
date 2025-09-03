@@ -6,6 +6,7 @@ from validador_apuesta import ValidadorApuesta
 
 class GestorPartida:
     def __init__(self, jugadores):
+        self.nuevo_turno =True
         self.jugadores = jugadores
         self.current_player = []
         self.direccion = 0
@@ -21,6 +22,8 @@ class GestorPartida:
             self.dudar()
         elif opcion == "calzar":
             self.calzar()
+        elif opcion == "apostar":
+            self.apostar()
 
     def setDireccion(self, direccion):
         if direccion == "derecha":
@@ -30,7 +33,8 @@ class GestorPartida:
 
     def jugar(self):
         self._jugar()
-        self.current_player = (self.current_player + self.direccion) % len(self.jugadores)
+        if not self.nuevo_turno:
+            self.next_player()
 
     def jugador_en_turno(self):
         return self.jugadores[self.current_player]
@@ -53,10 +57,13 @@ class GestorPartida:
         self.current_player = self.current_player[0]
 
     def empezar_turno(self):
+        self.nuevo_turno = False
         for cacho in self.cachos.values():
             cacho.lanzarDados()
-        d=input(f"{self.jugador_en_turno()} decida la direccion (izquierda o derecha):")
-        self.setDireccion(d)
+        if self.direccion == 0:
+            d=input(f"{self.jugador_en_turno()} decida la direccion (izquierda o derecha):")
+            self.setDireccion(d)
+
         while True:
             try:
                 print("Haga su apuesta inicial")
@@ -74,9 +81,12 @@ class GestorPartida:
         if res == "pierde_quien_dudo":
             self.cachos[self.jugador_en_turno()].retirarDado(self.arbitro)
             self.cachos[self.jugador_anterior()].agregarDado(self.arbitro)
+
         if res == "pierde_apostador":
             self.cachos[self.jugador_anterior()].retirarDado(self.arbitro)
             self.cachos[self.jugador_en_turno()].agregarDado(self.arbitro)
+            self.current_player = (self.current_player - self.direccion) % len(self.jugadores)
+        self.nuevo_turno =True
 
     def jugador_anterior(self):
         return self.jugadores[self.current_player-self.direccion]
@@ -89,3 +99,13 @@ class GestorPartida:
             self.cachos[self.jugador_en_turno()].agregarDado(self.arbitro)
         elif res == "falla":
             self.cachos[self.jugador_en_turno()].retirarDado(self.arbitro)
+        self.nuevo_turno=True
+
+    def apostar(self):
+            print("Haga su apuesta inicial")
+            pinta = input("Pinta: ")
+            cantidad = input("Cantidad: ")
+            self.validador = ValidadorApuesta(pinta,cantidad)
+
+    def next_player(self):
+        self.current_player = (self.current_player + self.direccion) % len(self.jugadores)
