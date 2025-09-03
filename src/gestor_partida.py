@@ -59,7 +59,6 @@ class GestorPartida:
         self.current_player = self.current_player[0]
 
     def empezar_turno(self):
-        self.nuevo_turno = False
         for jugador in self.jugadores:
             self.cachos[jugador].lanzarDados()
         if self.direccion == 0:
@@ -69,16 +68,8 @@ class GestorPartida:
         if self.turno_especial == self.jugador_en_turno():
             self.obligar = input(f"{self.jugador_en_turno()}, puedes usar tu turno especial, ¿deseas usarlo? (cerrado, abierto o no)" )
 
-
-        while True:
-            try:
-                print("Haga su apuesta inicial")
-                pinta = input("Pinta: ")
-                cantidad = input("Cantidad: ")
-                self.validador = ValidadorApuesta(pinta,cantidad,especial= self.obligar == "cerrado" or self.obligar == "abierto")
-                break
-            except ValueError as e:
-                print(str(e))
+        self.apostar()
+        self.nuevo_turno = False
 
     def dudar(self):
         res = self.arbitro.resolver_duda((self.validador.cantidad_actual, self.validador.pinta_actual),
@@ -104,18 +95,30 @@ class GestorPartida:
                                          self.cachos.values(), True)
         if res == "acierto":
             self.cachos[self.jugador_en_turno()].agregarDado(self.arbitro)
+            self.turno_especial = None
         elif res == "falla":
             self.cachos[self.jugador_en_turno()].retirarDado(self.arbitro)
             self.verificarDados(self.jugador_en_turno())
         self.nuevo_turno=True
-        self.turno_especial = None
+
 
     def apostar(self):
-        print("Haga su apuesta inicial")
+        if self.nuevo_turno == True:
+            while True:
+                try:
+                    print("Haga su apuesta inicial")
+                    pinta = input("Pinta: ")
+                    cantidad = input("Cantidad: ")
+                    self.validador = ValidadorApuesta(pinta, cantidad,
+                    especial=self.obligar == "cerrado" or self.obligar == "abierto")
+                    return
+                except ValueError as e:
+                    print(str(e))
+
+        print("Haga su apuesta ")
         pinta = input("Pinta: ")
         cantidad = input("Cantidad: ")
-        self.validador = ValidadorApuesta(pinta,cantidad)
-        self.turno_especial =None
+        self.validador.apostar(pinta,cantidad)
 
     def next_player(self):
         self.current_player = (self.current_player + self.direccion) % len(self.jugadores)
