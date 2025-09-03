@@ -124,3 +124,89 @@ def test_jugador_apuesta(mocker):
     assert gestor.cachos["Benjamín"].getCantidadDados() == 5
     assert gestor.cachos["Andrés"].getCantidadDados() == 5
     assert gestor.jugador_en_turno() == "Alex"
+    assert gestor.ver_dados() == [5,5,5,5,5]
+
+def test_ronda_obligada_abierta(mocker):
+    jugadores = ["Andrés", "Benjamín", "Alex"]
+    valores_dados = [
+        6, 2, 4,  # Para que Andrés empiece
+        5, 5, 5, 5, 5,  # Andrés
+        5, 5, 5, 5, 5,  # Benjamín
+        5, 5, 5, 5, 5,  # Alex
+        5, 5, 5, 5,   # Andrés
+        5, 5, 5, 5, 5,  # Benjamín
+        5, 5, 5, 5, 5, #Alex
+        5, 5, 5,  # Andrés
+        5, 5, 5, 5, 5,  # Benjamín
+        5, 5, 5, 5, 5, # Alex
+        5, 5,  # Andrés
+        5, 5, 5, 5, 5,  # Benjamín
+        5, 5, 5, 5, 5,  # Alex
+        5,   # Andrés
+        5, 5, 5, 5, 5,  # Benjamín
+        5, 5, 5, 5, 5,  # Alex
+    ]
+    mocker.patch("random.randint", side_effect=valores_dados)
+    mocker.patch('builtins.input', side_effect=["derecha",
+                                                3, 15, "dudar",
+                                                3, 15, "dudar",
+                                                3, 15, "dudar",
+                                                3, 15, "dudar",
+                                                "abierto", 3, 15])
+    gestor = GestorPartida(jugadores)
+    gestor.empezar_turno()
+    gestor.jugar()
+    gestor.empezar_turno()
+    gestor.jugar()
+    gestor.empezar_turno()
+    gestor.jugar()
+    gestor.empezar_turno()
+    gestor.jugar()
+    gestor.empezar_turno()
+    assert gestor.cachos["Andrés"].getCantidadDados() == 1
+    assert gestor.ver_dados() == [[5,5,5,5,5],[5,5,5,5,5]]
+    gestor.next_player() #Simulamos siguiente jugador entra su turno
+    assert gestor.ver_dados()  == [[5],[5,5,5,5,5]]
+
+
+def test_ronda_obligada_cerrada(mocker):
+    jugadores = ["Andrés", "Benjamín", "Alex"]
+    valores_dados = [
+        6, 2, 4,  # Para que Andrés empiece
+        5, 5, 5, 5, 5,  # Andrés
+        5, 5, 5, 5, 5,  # Benjamín
+        5, 5, 5, 5, 5,  # Alex
+        5, 5, 5, 5,  # Andrés
+        5, 5, 5, 5, 5,  # Benjamín
+        5, 5, 5, 5, 5,  # Alex
+        5, 5, 5,  # Andrés
+        5, 5, 5, 5, 5,  # Benjamín
+        5, 5, 5, 5, 5,  # Alex
+        5, 5,  # Andrés
+        5, 5, 5, 5, 5,  # Benjamín
+        5, 5, 5, 5, 5,  # Alex
+        5,  # Andrés
+        5, 5, 5, 5, 5,  # Benjamín
+        5, 5, 5, 5, 5,  # Alex
+    ]
+    mocker.patch("random.randint", side_effect=valores_dados)
+    mocker.patch('builtins.input', side_effect=["derecha",
+                                                3, 15, "dudar",
+                                                3, 15, "dudar",
+                                                3, 15, "dudar",
+                                                3, 15, "dudar",
+                                                "cerrado", 2, 5])
+    gestor = GestorPartida(jugadores)
+    gestor.empezar_turno()
+    gestor.jugar()
+    gestor.empezar_turno()
+    gestor.jugar()
+    gestor.empezar_turno()
+    gestor.jugar()
+    gestor.empezar_turno()
+    gestor.jugar()
+    gestor.empezar_turno()
+    assert gestor.cachos["Andrés"].getCantidadDados() == 1
+    assert gestor.ver_dados() == [5]
+    gestor.next_player()
+    assert gestor.ver_dados() == []
