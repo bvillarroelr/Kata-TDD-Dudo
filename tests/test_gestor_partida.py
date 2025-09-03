@@ -245,3 +245,32 @@ def test_jugador_pierde(mocker):
     assert gestor.jugador_en_turno() == "Alex"
     gestor.next_player()
     assert gestor.jugador_en_turno() == "Benjamín"
+
+def test_jugador_gana(mocker,capsys):
+    jugadores = ["Benjamín", "Alex"]
+    valores_dados = [
+        6, 2, 4,  # Para que Andrés empiece
+        5, 5, 5, 5, 5,  # Benjamín
+        5, 5, 5, 5, 5,  # Alex
+        5, 5, 5, 5, 5,  # Benjamín
+        5, 5, 5, 5, 5,  # Alex
+        5, 5, 5, 5, 5,  # Benjamín
+        5, 5, 5, 5, 5  # Alex
+    ]
+    mocker.patch("random.randint", side_effect=valores_dados)
+    mocker.patch('builtins.input', side_effect=["derecha",
+                                                3, 15, "dudar",
+                                                3, 15, "dudar",
+                                                3, 15])
+    gestor = GestorPartida(jugadores)
+    gestor.empezar_turno()
+    gestor.jugar()
+    gestor.cachos["Benjamín"].setCantidadDados(1)
+    assert gestor.cachos[gestor.jugador_en_turno()].getCantidadDados() == 1
+    gestor.empezar_turno()
+    gestor.jugar()
+    salida = capsys.readouterr()
+    assert "Alex ha ganado" in salida.out
+    with pytest.raises(Exception) as exc_info:
+        gestor.jugar()
+    assert "Juego terminado" in str(exc_info.value)
