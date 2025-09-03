@@ -3,11 +3,14 @@
 class ValidadorApuesta:
 
     def __init__(self,pinta,cantidad, especial=False):
+        self.especial = especial
         if pinta == 1 and not especial:
             raise ValueError("No puedes empezar la apuesta con un as")
         self._actualizar_apuesta(pinta,cantidad)
 
-    def apostar(self, pinta, cantidad):
+    def apostar(self, pinta, cantidad, un_dado=False):
+        if self.especial:
+            return self.apostar_especial(pinta, cantidad, un_dado)
         if self._es_cambio_a_as(pinta, cantidad):
             return self._actualizar_apuesta(pinta, cantidad)
 
@@ -50,4 +53,14 @@ class ValidadorApuesta:
         self.cantidad_actual = cantidad
         return True
 
+    def _validar_cambio_apuesta_especial(self,pinta,cantidad,un_dado):
+        if un_dado:
+            return self._validar_cambio_apuesta(pinta,cantidad)
+        else:
+            if self.pinta_actual != pinta:
+                raise ValueError("No puedes cambiar la pinta este turno")
 
+
+    def apostar_especial(self, pinta, cantidad, un_dado):
+        self._validar_cambio_apuesta_especial(pinta, cantidad,un_dado)
+        return self._actualizar_apuesta(pinta, cantidad)
