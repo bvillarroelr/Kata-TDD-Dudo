@@ -2,8 +2,8 @@
 
 class ValidadorApuesta:
 
-    def __init__(self,pinta,cantidad):
-        if pinta == 1:
+    def __init__(self,pinta,cantidad, especial=False):
+        if pinta == 1 and not especial:
             raise ValueError("No puedes empezar la apuesta con un as")
         self._actualizar_apuesta(pinta,cantidad)
 
