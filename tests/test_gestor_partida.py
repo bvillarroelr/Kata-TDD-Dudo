@@ -123,6 +123,7 @@ def test_jugador_apuesta(mocker):
     gestor.jugar()
     assert gestor.cachos["Benjamín"].getCantidadDados() == 5
     assert gestor.cachos["Andrés"].getCantidadDados() == 5
+    gestor.next_player()
     assert gestor.jugador_en_turno() == "Alex"
     assert gestor.ver_dados() == [5,5,5,5,5]
 
@@ -210,3 +211,4 @@ def test_ronda_obligada_cerrada(mocker):
     assert gestor.ver_dados() == [5]
     gestor.next_player()
     assert gestor.ver_dados() == []
+
