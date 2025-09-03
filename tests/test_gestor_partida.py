@@ -52,6 +52,7 @@ def test_jugador_duda_mal(mocker):
     assert gestor.cachos["Benjamín"].getCantidadDados() == 4
     assert gestor.cachos["Andrés"].getCantidadDados() == 5
     assert gestor.cachos["Andrés"].buffer == 1
+    assert gestor.jugador_en_turno() == "Benjamín"
 
 def test_jugador_duda_bien(mocker):
     jugadores = ["Andrés", "Benjamín", "Alex"]
@@ -69,6 +70,7 @@ def test_jugador_duda_bien(mocker):
     assert gestor.cachos["Benjamín"].getCantidadDados() == 5
     assert gestor.cachos["Andrés"].getCantidadDados() == 4
     assert gestor.cachos["Benjamín"].buffer == 1
+    assert gestor.jugador_en_turno() == "Andrés"
 
 def test_jugador_calza_bien(mocker):
     jugadores = ["Andrés", "Benjamín", "Alex"]
@@ -86,6 +88,8 @@ def test_jugador_calza_bien(mocker):
     assert gestor.cachos["Benjamín"].getCantidadDados() == 5
     assert gestor.cachos["Andrés"].getCantidadDados() == 5
     assert gestor.cachos["Benjamín"].buffer == 1
+    assert gestor.jugador_en_turno() == "Benjamín"
+
 
 def test_jugador_calza_mal(mocker):
     jugadores = ["Andrés", "Benjamín", "Alex"]
@@ -103,3 +107,21 @@ def test_jugador_calza_mal(mocker):
     assert gestor.cachos["Benjamín"].getCantidadDados() == 4
     assert gestor.cachos["Andrés"].getCantidadDados() == 5
     assert gestor.cachos["Andrés"].buffer == 0
+    assert gestor.jugador_en_turno() == "Benjamín"
+
+def test_jugador_apuesta(mocker):
+    jugadores = ["Andrés", "Benjamín", "Alex"]
+    valores_dados = [
+        6, 2, 4,  # Para que Andrés empiece
+        5, 5, 5, 5, 5,  # Andrés
+        5, 5, 5, 5, 5,  # Benjamín
+        5, 5, 5, 5, 5  # Alex
+    ]
+    mocker.patch("random.randint", side_effect=valores_dados)
+    mocker.patch('builtins.input', side_effect=["derecha", 3, 15, "apostar",4,15])
+    gestor = GestorPartida(jugadores)
+    gestor.empezar_turno()
+    gestor.jugar()
+    assert gestor.cachos["Benjamín"].getCantidadDados() == 5
+    assert gestor.cachos["Andrés"].getCantidadDados() == 5
+    assert gestor.jugador_en_turno() == "Alex"
