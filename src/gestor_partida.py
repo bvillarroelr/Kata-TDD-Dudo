@@ -60,8 +60,8 @@ class GestorPartida:
 
     def empezar_turno(self):
         self.nuevo_turno = False
-        for cacho in self.cachos.values():
-            cacho.lanzarDados()
+        for jugador in self.jugadores:
+            self.cachos[jugador].lanzarDados()
         if self.direccion == 0:
             d=input(f"{self.jugador_en_turno()} decida la direccion (izquierda o derecha):")
             self.setDireccion(d)
@@ -75,7 +75,7 @@ class GestorPartida:
                 print("Haga su apuesta inicial")
                 pinta = input("Pinta: ")
                 cantidad = input("Cantidad: ")
-                self.validador = ValidadorApuesta(pinta,cantidad)
+                self.validador = ValidadorApuesta(pinta,cantidad,especial= self.obligar == "cerrado" or self.obligar == "abierto")
                 break
             except ValueError as e:
                 print(str(e))
@@ -126,6 +126,12 @@ class GestorPartida:
             if jugador not in self.jugadores_con_especial:
                 self.jugadores_con_especial.append(jugador)
                 self.turno_especial = jugador
+        elif self.cachos[jugador].getCantidadDados() == 0:
+            if self.direccion == 1 and self.current_player == len(self.jugadores) - 1:
+                self.current_player = 0
+            elif self.direccion == -1 and self.current_player == 0:
+                self.current_player = len(self.jugadores) - 2
+            self.jugadores.remove(jugador)
 
     def ver_dados(self):
         if self.obligar == None:
