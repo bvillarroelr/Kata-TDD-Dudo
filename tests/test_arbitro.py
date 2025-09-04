@@ -66,9 +66,8 @@ def test_condicion_calzar_mitad_dados():
     dados_en_juego = c1.getCantidadDados() + c2.getCantidadDados() # 2 cachos en juego, 5 dados por cacho = 10
     
     arb = ArbitroRonda()
-    c1.setApuesta((5,3))
     # suponemos que el jugador con el cacho 1 es quien quiere calzar
-    assert arb.verificarCalzar(dados_en_juego, c1) is True
+    assert arb.verificarCalzar(dados_en_juego, c1,5) is True
 
 def test_condicion_calzar_1dado():
     c1 = Cacho()
@@ -77,10 +76,9 @@ def test_condicion_calzar_1dado():
     for i in range(4):
         c1.retirarDado(arb)    # solo queda 1 dado
 
-    c1.setApuesta((5,3))
     dados_en_juego = c1.getCantidadDados() + c2.getCantidadDados()
     assert dados_en_juego == 6 
-    assert arb.verificarCalzar(dados_en_juego, c1) is True # como c1 tiene un dado, si se puede calzar
+    assert arb.verificarCalzar(dados_en_juego, c1,2) is True # como c1 tiene un dado, si se puede calzar
 
 def test_quitar_y_dar_dados():
     c1 = Cacho()

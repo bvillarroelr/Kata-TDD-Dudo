@@ -17,12 +17,10 @@ class ArbitroRonda:
         total = contador.contar(pinta=pinta, un_dado=not ases_comodin)
         return "acierto" if total == cantidad else "falla"
     
-    def verificarCalzar(self, dados_en_juego, cacho):
+    def verificarCalzar(self, dados_en_juego, cacho, cantidad_apostada):
         if cacho.getCantidadDados() == 1:
             return True
-        
-        apuesta = cacho.getApuesta()
-        cantidad_apostada = apuesta[0]
+
         return cantidad_apostada >= math.ceil(dados_en_juego / 2)
 
     def getPoolDados(self):
