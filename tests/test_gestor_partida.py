@@ -138,6 +138,7 @@ def test_ronda_obligada_cerrada(partida_base):
     gestor.next_player()
     assert gestor.ver_dados() == []
 
+#Mostrar que los jugadores que se quedan sin dados desaparecen del juego
 def test_jugador_pierde(partida_base):
     jugadores = ["Andrés", "Benjamín", "Alex"]
     dados = [6, 2, 4] + [5]*45
@@ -150,7 +151,7 @@ def test_jugador_pierde(partida_base):
     assert gestor.cachos[gestor.jugador_en_turno()].getCantidadDados() == 1
 
     gestor.empezar_turno()
-    gestor.jugar()
+    gestor.jugar() #Dudan de Andrés perdiendo su ultimo dado
     gestor.empezar_turno()
     assert gestor.jugador_en_turno() == "Benjamín"
     gestor.next_player()
@@ -163,7 +164,7 @@ def test_jugador_gana(partida_base, capsys):
     dados = [6, 2, 4] + [5]*35
     inputs = ["derecha", 3, 15, "dudar", 3, 15, "dudar", 3, 15]
     gestor = partida_base(jugadores, dados, inputs)
-
+    #Simulacíón de un jugador perdiendo y el otro sobreviviendo
     gestor.empezar_turno()
     gestor.jugar()
     gestor.cachos["Benjamín"].setCantidadDados(1)
@@ -184,13 +185,13 @@ def test_jugador_apuesta_mal(partida_base):
     gestor = partida_base(jugadores, dados, inputs)
 
     with pytest.raises(ValueError, match="Apuesta invalida"):
-        gestor.empezar_turno()
+        gestor.empezar_turno() #Se establece la derecha y  la pinta 1 con cantidad 15, invalido por pinta
 
     gestor.empezar_turno()
     assert gestor.jugador_en_turno() == "Andrés"
 
     with pytest.raises(ValueError, match="Apuesta invalida"):
-        gestor.jugar()
+        gestor.jugar()  #apuesta con pinta 3 y cantidad 14, invalida por bajar cantidad
 
     assert gestor.jugador_en_turno() == "Andrés"
 
@@ -217,17 +218,17 @@ def test_mala_apuesta_ronda_especial(partida_base):
 
     gestor.empezar_turno()
     gestor.jugar()
-    gestor.empezar_turno()
+    gestor.empezar_turno() #Se activa ronda especial cerrada aca
 
     with pytest.raises(ValueError, match="Apuesta invalida"):
-        gestor.jugar()
+        gestor.jugar() #No puede cambiar la pinta
 
-    gestor.jugar()
+    gestor.jugar() #Se avanza
 
     with pytest.raises(ValueError, match="Apuesta invalida"):
-        gestor.jugar()
+        gestor.jugar() #Si pueda cambiar la ppinta pero no bajar la cantidad
 
-    gestor.jugar()
+    gestor.jugar() #Valido
     assert gestor.jugador_en_turno() == "Alex"
 
 def test_especial_solo_una_vez(partida_base):
@@ -256,6 +257,7 @@ def test_especial_solo_una_vez(partida_base):
     gestor.jugar() #Andrés calza y queda con 1 dado por segunda vez, no hay turno especial de nuevo
     assert gestor.turno_especial == None
 
+#Para probar cuando un jugador pierde y esta en el borde del arreglo, asegura no haber indices fuera de rango
 def test_jugador_pierde_al_borde_con_derecha(partida_base):
     jugadores = ["Andrés", "Benjamín", "Alex"]
     dados = [2, 6, 2] + [5] * 90
