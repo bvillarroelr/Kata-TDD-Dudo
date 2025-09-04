@@ -113,16 +113,13 @@ class GestorPartida:
 
     def apostar(self):
         try:
-            if self.nuevo_turno == True:
-                print("Haga su apuesta inicial")
-                pinta = input("Pinta: ")
-                cantidad = input("Cantidad: ")
-                self.validador = ValidadorApuesta(pinta, cantidad,
-                especial=self.obligar == "cerrado" or self.obligar == "abierto")
-                return
             print("Haga su apuesta ")
             pinta = input("Pinta: ")
             cantidad = input("Cantidad: ")
+            if self.nuevo_turno == True:
+                self.validador = ValidadorApuesta(pinta, cantidad,
+                especial=self.obligar == "cerrado" or self.obligar == "abierto")
+                return
             un_dado =False
             if self.cachos[self.jugador_en_turno()].getCantidadDados() == 1:
                 un_dado=True
