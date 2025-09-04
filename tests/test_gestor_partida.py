@@ -3,6 +3,8 @@ from gestor_partida import *
 
 from dado import Dado
 
+
+
 @pytest.fixture
 def partida_base(mocker):
     def _crear(jugadores, valores_dados, inputs):
@@ -227,3 +229,90 @@ def test_mala_apuesta_ronda_especial(partida_base):
 
     gestor.jugar()
     assert gestor.jugador_en_turno() == "Alex"
+
+def test_especial_solo_una_vez(partida_base):
+    jugadores = ["Andrés", "Benjamín", "Alex"]
+    dados = [6, 2, 2] + [5] * 90
+    inputs = ["derecha", 3, 15, "calzar", "cerrado", 5, 2,
+              "dudar", 2, 5, "calzar","no", 5, 1, "dudar", 2, 5, "apostar", 6, 6, "calzar", 2, 2 ]
+    gestor = partida_base(jugadores, dados, inputs)
+
+    preparar_dados(gestor, {"Andrés": 2, "Benjamín": 2})
+    gestor.empezar_turno()#Empieza Andrés
+    gestor.jugar() #Benja calza y pierde un dado
+    gestor.empezar_turno() #Ronda especial cuando Benja queda con 1 dado
+    assert gestor.turno_especial == "Benjamín"
+    assert gestor.obligar == "cerrado"
+    gestor.jugar() #Alex duda y pierde un dado y lo gana Benja
+    gestor.empezar_turno() #Empieza alex
+    gestor.jugar() #Andrés calza y pierde un dado
+    gestor.empezar_turno() #Turno especial de andrés pero decide no usar su turno especial (lo pierde)
+    assert gestor.turno_especial == "Andrés"
+    assert gestor.obligar == "no"
+    gestor.jugar() #Benja duda y vuelve a quedar con 1 dado , no hay turno especial, Andrés gana 1 dado
+    gestor.empezar_turno()
+    assert gestor.turno_especial == None
+    gestor.jugar() #Alex apuesta
+    gestor.jugar() #Andrés calza y queda con 1 dado por segunda vez, no hay turno especial de nuevo
+    assert gestor.turno_especial == None
+
+def test_jugador_pierde_al_borde_con_derecha(partida_base):
+    jugadores = ["Andrés", "Benjamín", "Alex"]
+    dados = [2, 6, 2] + [5] * 90
+    inputs = ["derecha", 3, 15, "calzar"]
+    gestor = partida_base(jugadores, dados, inputs)
+
+    preparar_dados(gestor, { "Alex": 1})
+    gestor.empezar_turno()
+    gestor.jugar()
+    assert gestor.jugador_en_turno() == "Andrés"
+
+    dados = [2, 2, 6] + [5] * 90
+    gestor = partida_base(jugadores, dados, inputs)
+    preparar_dados(gestor, {"Andrés": 1})
+    gestor.empezar_turno()
+    gestor.jugar()
+    assert gestor.jugador_en_turno() == "Benjamín"
+
+def test_jugador_pierde_al_borde_con_izquierda(partida_base):
+    jugadores = ["Andrés", "Benjamín", "Alex"]
+    dados = [2, 6, 2] + [5] * 90
+    inputs = ["izquierda", 3, 15, "calzar"]
+    gestor = partida_base(jugadores, dados, inputs)
+
+    preparar_dados(gestor, {"Andrés": 1})
+    gestor.empezar_turno()
+    gestor.jugar()
+    assert gestor.jugador_en_turno() == "Alex"
+
+    jugadores = ["Andrés", "Benjamín", "Alex"]
+    dados = [6, 2, 2] + [5] * 90
+    gestor = partida_base(jugadores, dados, inputs)
+
+    preparar_dados(gestor, {"Alex": 1})
+    gestor.empezar_turno()
+    gestor.jugar()
+    assert gestor.jugador_en_turno() == "Benjamín"
+
+def test_empezar_2_veces_turno(partida_base):
+    jugadores = ["Andrés", "Benjamín", "Alex"]
+    dados = [2, 6, 2] + [5] * 15
+    inputs = ["izquierda", 3, 15]
+    gestor = partida_base(jugadores, dados, inputs)
+
+    gestor.empezar_turno()
+    with pytest.raises(Exception, match="El turno ya comenzó"):
+        gestor.empezar_turno()
+
+def test_jugar_sin_empezar_turno(partida_base):
+    jugadores = ["Andrés", "Benjamín", "Alex"]
+    dados = [2, 6, 2] + [5] * 15
+    inputs = ["izquierda", 3, 15]
+    gestor = partida_base(jugadores, dados, inputs)
+
+    with pytest.raises(Exception, match="El turno aun no comienza"):
+        gestor.jugar()
+
+def test_un_solo_jugador():
+    with pytest.raises(Exception, match="Se necesitan al menos 2 jugadores para instanciar"):
+        gestor = GestorPartida(["Andrés"])
