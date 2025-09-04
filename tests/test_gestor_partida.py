@@ -274,3 +274,84 @@ def test_jugador_gana(mocker,capsys):
     with pytest.raises(Exception) as exc_info:
         gestor.jugar()
     assert "Juego terminado" in str(exc_info.value)
+
+def test_jugador_apuesta_mal(mocker):
+    jugadores = ["Andrés", "Benjamín", "Alex"]
+    valores_dados = [
+        6, 2, 4,  # Para que Andrés empiece
+        5, 5, 5, 5, 5,  # Andrés
+        5, 5, 5, 5, 5,  # Benjamín
+        5, 5, 5, 5, 5,  # Alex
+        5, 5, 5, 5, 5,  # Andrés
+        5, 5, 5, 5, 5,  # Benjamín
+        5, 5, 5, 5, 5  # Alex
+    ]
+    mocker.patch("random.randint", side_effect=valores_dados)
+    mocker.patch('builtins.input', side_effect=["derecha", 1, 15, 2, 15,"apostar", 3, 14])
+    gestor = GestorPartida(jugadores)
+    with pytest.raises(ValueError) as exc_info:
+        gestor.empezar_turno()
+    assert "Apuesta invalida" in str(exc_info.value)
+    gestor.empezar_turno()
+    assert gestor.jugador_en_turno() == "Andrés"
+    with pytest.raises(ValueError) as exc_info:
+        gestor.jugar()
+    assert "Apuesta invalida" in str(exc_info.value)
+    assert gestor.jugador_en_turno() == "Andrés"
+
+def test_jugador_calza_invalido(mocker):
+    jugadores = ["Andrés", "Benjamín", "Alex"]
+    valores_dados = [
+        6, 2, 4,  # Para que Andrés empiece
+        5, 5, 5, 5, 5,  # Andrés
+        5, 5, 5, 5, 5,  # Benjamín
+        5, 5, 5, 5, 5,  # Alex
+        5, 5, 5, 5, 5,  # Andrés
+        5, 5, 5, 5, 5,  # Benjamín
+        5, 5, 5, 5, 5  # Alex
+    ]
+    mocker.patch("random.randint", side_effect=valores_dados)
+    mocker.patch('builtins.input', side_effect=["derecha", 2, 5, "calzar"])
+    gestor = GestorPartida(jugadores)
+    gestor.empezar_turno()
+    with pytest.raises(Exception) as exc_info:
+        gestor.jugar()
+    assert "No puedes calzar en estas condiciones." in str(exc_info.value)
+    assert gestor.jugador_en_turno() == "Andrés"
+
+def test_mala_apuesta_ronda_especial(mocker):
+    jugadores = ["Andrés", "Benjamín", "Alex"]
+    valores_dados = [
+        6, 2, 4,  # Para que Andrés empiece
+        5, 5,   # Andrés
+        5, 5, 5, 5, 5,  # Benjamín
+        5,   # Alex
+        5,  # Andrés
+        5, 5, 5, 5, 5,  # Benjamín
+        5,  # Alex
+    ]
+    mocker.patch("random.randint", side_effect=valores_dados)
+    mocker.patch('builtins.input', side_effect=["derecha",
+                                                3, 15, "dudar",
+                                                "cerrado", 1, 5,
+                                                "apostar",2, 5,
+                                                "apostar",1,6,
+                                                "apostar",1,5,
+                                                "apostar",6,6])
+    gestor = GestorPartida(jugadores)
+    gestor.cachos["Andrés"].lista_dados = [Dado(), Dado()]
+    gestor.cachos["Andrés"].setCantidadDados(2)
+    gestor.cachos["Alex"].lista_dados = [Dado()]
+    gestor.cachos["Alex"].setCantidadDados(1)
+    gestor.empezar_turno()
+    gestor.jugar()
+    gestor.empezar_turno() #Se establece ronda especial cerrada aqui
+    with pytest.raises(ValueError) as exc_info:
+        gestor.jugar()
+    assert "Apuesta invalida" in str(exc_info.value)
+    gestor.jugar()
+    with pytest.raises(ValueError) as exc_info:
+        gestor.jugar()
+    assert "Apuesta invalida" in str(exc_info.value)
+    gestor.jugar()
+    assert gestor.jugador_en_turno() == "Alex"
