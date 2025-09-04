@@ -93,6 +93,12 @@ class GestorPartida:
         return self.jugadores[self.current_player-self.direccion]
 
     def calzar(self):
+        sum = 0
+        for jugador in self.jugadores:
+            sum += self.cachos[jugador].getCantidadDados()
+        if not self.arbitro.verificarCalzar(sum,self.cachos[self.jugador_en_turno()],self.validador.cantidad_actual) :
+            self._player_rollback()
+            raise Exception("No puedes calzar en estas condiciones.")
 
         res = self.arbitro.resolver_calzar((self.validador.cantidad_actual, self.validador.pinta_actual),
                                          self.cachos.values(), True)
@@ -106,22 +112,24 @@ class GestorPartida:
 
 
     def apostar(self):
-        if self.nuevo_turno == True:
-            while True:
-                try:
-                    print("Haga su apuesta inicial")
-                    pinta = input("Pinta: ")
-                    cantidad = input("Cantidad: ")
-                    self.validador = ValidadorApuesta(pinta, cantidad,
-                    especial=self.obligar == "cerrado" or self.obligar == "abierto")
-                    return
-                except ValueError as e:
-                    print(str(e))
-
-        print("Haga su apuesta ")
-        pinta = input("Pinta: ")
-        cantidad = input("Cantidad: ")
-        self.validador.apostar(pinta,cantidad)
+        try:
+            if self.nuevo_turno == True:
+                print("Haga su apuesta inicial")
+                pinta = input("Pinta: ")
+                cantidad = input("Cantidad: ")
+                self.validador = ValidadorApuesta(pinta, cantidad,
+                especial=self.obligar == "cerrado" or self.obligar == "abierto")
+                return
+            print("Haga su apuesta ")
+            pinta = input("Pinta: ")
+            cantidad = input("Cantidad: ")
+            un_dado =False
+            if self.cachos[self.jugador_en_turno()].getCantidadDados() == 1:
+                un_dado=True
+            self.validador.apostar(pinta,cantidad,un_dado=un_dado)
+        except ValueError as e:
+            self._player_rollback()
+            raise ValueError(f"Apuesta invalida: {str(e)}")
 
     def next_player(self):
         self.current_player = (self.current_player + self.direccion) % len(self.jugadores)
@@ -159,3 +167,7 @@ class GestorPartida:
         if len(self.jugadores) == 1:
             print(f"{self.jugadores[0]} ha ganado")
             self.juego_activo = False
+
+    def _player_rollback(self):
+        if not self.nuevo_turno:
+            self.current_player = (self.current_player - self.direccion) % len(self.jugadores)
