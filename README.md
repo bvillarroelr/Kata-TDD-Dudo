@@ -30,5 +30,5 @@ pytest --cov=src --cov-report=term-missing
 ```
 
 # Integrantes
-Andrés Ignacio Chaparro Maldonado
-Benjamín Cristóbal Villarroel Rubio
+- Andrés Ignacio Chaparro Maldonado
+- Benjamín Cristóbal Villarroel Rubio
